@@ -14,6 +14,9 @@
         return false;
     });
     socket.on('message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+        addMessage(msg);
     });
+    function addMessage(msg){
+        $('#messages').append($('<li>').text(msg));
+    }
 </script>
