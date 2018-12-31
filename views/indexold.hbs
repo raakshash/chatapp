@@ -1,0 +1,59 @@
+<section>
+    <h1>{{currentUser}}</h1>
+</section>
+<section>
+    <ul id="messages"></ul>
+</section>
+<section id="typing">
+
+</section>
+<section>
+    <form action="" id="chatbox">
+        <label>Enter your message</label>
+        <input name="message" id="msg" cols="30" rows="10">
+        <input type="submit" id="send">
+    </form>
+</section>
+
+<script>
+    var socket = io.connect();
+
+    $(setTimeout(function () {
+        var msg = {};
+        msg.user = 'Admin';
+        var currentUser = '{{currentUser}}';
+        if(currentUser == "Anonymous"){
+            currentUser = "";
+        }
+        msg = "Hey " + currentUser + "! How can I help you?"
+        addMessage(msg);
+    }, 1000));
+
+    $('form').submit(function () {
+        socket.emit('message', $('#msg').val());
+        $('#msg').val('');
+        return false;
+    });
+    socket.on('message', function (msg) {
+        addMessage(msg);
+    });
+    $('#msg').bind("keydown", function () {
+        socket.emit('typing', { "username": "Anonymous" });
+    });
+    $('#msg').bind("keyup", function () {
+        setTimeout(function () {
+            socket.emit('typing');
+        }, 1000);
+    });
+    socket.on('typing', function (data) {
+        if (data !== undefined) {
+            $('#typing').html($('<p>').text(data.username + " is typing..."));
+        } else {
+            $('#typing').html($('<p>').text(""));
+        }
+
+    });
+    function addMessage(msg) {
+        $('#messages').append($('<li>').text(msg));
+    }
+</script>

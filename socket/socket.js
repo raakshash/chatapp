@@ -20,5 +20,13 @@ exports.init = function (server) {
             io.emit('message', msg);
             msg.lastUser = msg.user;
         });
+        socket.on('typing', function(data){
+            if(data !== undefined){
+                socket.broadcast.emit('typing', {"username": data.username});
+            }else{
+                socket.broadcast.emit('typing');
+            }
+            
+        });
     });
 };
