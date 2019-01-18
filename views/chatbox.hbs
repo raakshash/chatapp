@@ -1,19 +1,25 @@
-<section>
-    <h1>{{currentUser}}</h1>
-</section>
-<section id="chat-messages"></section>
-<section id="typing">
+<div class="col-md-4" id="chat-users">
 
-</section>
-<section class="input-group" id="chat-input-box">
-    <input name="" id="chat-message-input" class="type_msg" placeholder="Type your message...">
-    <button class="input-group-append" id="send_chat_btn" data-ui="chat-send" title="Start a chat">
-        <span id="send-chat" class="input-group-text send_btn" aria-hidden="true">Send</span>
-    </button>
-</section>
+</div>
+<div class="col-md-8">
+    <section>
+        <h1>{{currentUser}}</h1>
+    </section>
+    <section id="chat-messages"></section>
+    <section id="typing">
+
+    </section>
+    <section class="input-group" id="chat-input-box">
+        <input name="" id="chat-message-input" class="type_msg" placeholder="Type your message...">
+        <button class="input-group-append" id="send_chat_btn" data-ui="chat-send" title="Start a chat">
+            <span id="send-chat" class="input-group-text send_btn" aria-hidden="true">Send</span>
+        </button>
+    </section>
+</div>
 
 <script>
     var socket = io.connect();
+    socket.emit('newUserAdded', '{{currentUser}}');
     var msgContClassName = 'container';
     var timeClassName = 'time-right';
     var lastUser = 'Admin';
@@ -47,7 +53,7 @@
         lastUser = iMsg.user;
     });
     $('#chat-message-input').bind("keydown", function () {
-        socket.emit('typing', { "username": "Anonymous" });
+        socket.emit('typing', { "username": '{{currentUser}}' });
     });
     $('#chat-message-input').bind("keyup", function () {
         setTimeout(function () {
@@ -82,4 +88,12 @@
             $('.last-chat-msg').append(iMsg.message);
         }
     }
+
+    socket.on('updateUserList', function (iUsers) {
+        iUsers.forEach(function(iUser){
+            if(iUser != '{{currentUser}}'){
+                $('#chat-users').prepend($('<section>').text(iUsers));
+            }
+        });
+    });
 </script>

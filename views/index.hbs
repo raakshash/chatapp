@@ -1,6 +1,7 @@
 <form action="/chat" method="POST" id="register">
     <div class="start-chat-container">
-        <input name="name" id="chat-user-name" class="form-control type_msg" placeholder="Type your name" required>
-        <button class="cta-primary-alt-l" id="go-to-chat-start">Start Chat</button>
+        {{!-- <input name="name" id="chat-user" class="form-control type_msg chat-user" placeholder="Type your name" required> --}}
+        <input name="userid" id="chat-user" class="form-control type_msg chat-user" placeholder="Type your userid" required>
+        <button class="chat-user-enter" id="go-to-chat-start">Start Chat</button>
     </div>
 </form>

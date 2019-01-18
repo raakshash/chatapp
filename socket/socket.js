@@ -1,5 +1,6 @@
 var sio = require('socket.io');
 var io = null;
+var users = [];
 
 exports.io = function () {
     return io;
@@ -20,13 +21,39 @@ exports.init = function (server) {
             io.emit('message', msg);
             msg.lastUser = msg.user;
         });
-        socket.on('typing', function(data){
-            if(data !== undefined){
-                socket.broadcast.emit('typing', {"username": data.username});
-            }else{
+        socket.on('typing', function (data) {
+            if (data !== undefined) {
+                socket.broadcast.emit('typing', {
+                    "username": data.username
+                });
+            } else {
                 socket.broadcast.emit('typing');
             }
-            
         });
+        socket.on('newUserAdded', function (iNewUser) {
+            socket.emit("updateUserList", users);
+            socket.broadcast.emit("updateUserList", users);
+            users.push(iNewUser);
+        });
+        socket.on('createRoom', function (iRoomName) {
+            var isRoomAvailable = users.find(function (iElem) {
+                return iRoomName == iElem;
+            });
+            if (users.length == 0) {
+                socket.emit()
+            } else if (!isRoomAvailable) {
+                users.push(iRoomName);
+                socket.emit("updateRoomList", iRoomName);
+                socket.broadcast.emit("updateRoomList", iRoomName);
+            }
+        });
+    });
+
+    io.of('/rooms').on('connection', function (socket) {
+
+    });
+
+    io.of('/chatroom').on('connection', function (socket) {
+
     });
 };

@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var fs = require('fs');
-var path = require('path');
+var io = require('../socket/socket').io();
 
 var newUser = "";
+var users = [];
 var newMessage = "";
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -11,8 +11,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/startchat', function(req, res){
-  if(newUser !== ""){
-    res.render('chatbox', {currentUser: newUser});
+  if(newUser !== "" && !users.find(function(user){
+    return user == newUser;
+  })){
+    users.push({"name":newUser});
+    res.render('users', {currentUser: newUser, users: users});
     newUser = "";
   }else{
     res.redirect('/');
@@ -21,7 +24,7 @@ router.get('/startchat', function(req, res){
 });
 
 router.post('/chat', function(req, res){
-    newUser = req.body.name;
+    newUser = req.body.userid;
     res.redirect('/startchat');
 });
 
@@ -31,7 +34,6 @@ router.get('/message', function(req, res){
 });
 
 router.post('/message', function(req, res){
-  var io = require('../socket/socket').io();
   console.log(req.body.msg);
   newMessage = req.body.msg;
   io.emit('message', newMessage);
