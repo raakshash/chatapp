@@ -49,11 +49,16 @@ exports.init = function (server) {
         });
     });
 
-    io.of('/rooms').on('connection', function (socket) {
-
-    });
-
-    io.of('/chatroom').on('connection', function (socket) {
-
+    io.of('/chat').on('connection', function (socket) {
+        socket.on('createUserRoom', function(iRoomTitle){
+            socket.emit('updateUsers', iRoomTitle);
+            socket.broadcast.emit('updateUsers', iRoomTitle);
+        });
+        socket.on('join', function(iRoomID){
+            socket.join(iRoomID);
+        });
+        socket.on('newMessage', function(iRoomID, iMsg){
+            socket.broadcast.to(iRoomID).emit("addMessage", iMsg);
+        });
     });
 };
