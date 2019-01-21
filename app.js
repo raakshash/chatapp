@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 global.$ = global.jQuery = require('jquery');
 global.Mustache = require('mustache');
-global.fs = require('fs');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
