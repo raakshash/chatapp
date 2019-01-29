@@ -109,13 +109,17 @@
         }
 
         function newMessage(iMsg, iClass) {
-            if (sessionStorage.getItem(currentRoomID) == null) {
+            var chatStoreRoom = currentRoomID;
+            if(iClass === "replies"){
+                chatStoreRoom = iMsg.username;
+            }
+            if (sessionStorage.getItem(chatStoreRoom) == null) {
                 var messagesLocal = [{ msg: iMsg, class: iClass }];
-                sessionStorage.setItem(currentRoomID, JSON.stringify(messagesLocal));
+                sessionStorage.setItem(chatStoreRoom, JSON.stringify(messagesLocal));
             } else {
-                var storedMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
+                var storedMessages = JSON.parse(sessionStorage.getItem(chatStoreRoom));
                 storedMessages.push({ msg: iMsg, class: iClass });
-                sessionStorage.setItem(currentRoomID, JSON.stringify(storedMessages));
+                sessionStorage.setItem(chatStoreRoom, JSON.stringify(storedMessages));
             }
             if (iClass == "sent") {
                 renderMessage(iMsg, iClass);
