@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/startchat', function(req, res){
   if(newUser !== ""){
-    res.render('users', {currentUser: newUser, users: Users});
+    res.render('users', {title: newUser,currentUser: newUser, users: Users});
     newUser = "";
   }else{
     res.redirect('/');

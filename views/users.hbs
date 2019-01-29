@@ -55,9 +55,11 @@
     socket.on('connect', function (e) {
         if (currentUserID != '') {
             socket.emit('createUserRoom', currentUserID);
+            socket.emit('join', currentUserID);
         }
         socket.on('updateUsers', function (iUser) {
-            if(iUser != ""){
+            var userExistLength = $('[data-username="' + iUser + '"]').length;
+            if (iUser != "" && userExistLength < 1) {
                 UpdateUsers(iUser);
             }
             $(".contact").on('click', function (e) {
@@ -65,9 +67,17 @@
                 $(this).addClass('active');
                 currentRoomID = $(this).data("username");
                 $(".contact-profile p").text(currentRoomID);
+                $('.sent').remove();
+                $('.replies').remove();
                 $(".content").show();
-                socket.emit('join', currentUserID);
-                socket.emit('join', currentRoomID);
+                var currentRoomMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
+                if (currentRoomMessages != null) {
+                    for (var i = 0; i < currentRoomMessages.length; i++) {
+                        iMessage = currentRoomMessages[i];
+                        renderMessage(iMessage.msg, iMessage.class);
+                    }
+                }
+                removeMessagePreview(currentRoomID);
                 console.log(currentRoomID);
             });
         });
@@ -75,7 +85,58 @@
             $('[data-username="' + iUser + '"]').remove()
         });
 
+        function createNotificationOnNewMessage(iIncomingMessage) {
+            if (!("Notification" in window)) {
+                alert("This browser does not support desktop notification");
+            }
+            if ("Notification" in window) {
+                Notification.requestPermission().then(function (status) {
+                    console.log('Notification permission status:', status);
+                    Notification['permission'] = status;
+                });
+
+                var options = {
+                    body: iIncomingMessage.messageContent,
+                    icon: 'https://ptetutorials.com/images/user-profile.png',
+                }
+                Notification
+                    .requestPermission()
+                    .then(function () {
+                        var notification = new Notification(iIncomingMessage.username+" sent a message", options);
+                        setTimeout(notification.close.bind(notification), 5000);
+                    });
+            }
+        }
+
         function newMessage(iMsg, iClass) {
+            if (sessionStorage.getItem(currentRoomID) == null) {
+                var messagesLocal = [{ msg: iMsg, class: iClass }];
+                sessionStorage.setItem(currentRoomID, JSON.stringify(messagesLocal));
+            } else {
+                var storedMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
+                storedMessages.push({ msg: iMsg, class: iClass });
+                sessionStorage.setItem(currentRoomID, JSON.stringify(storedMessages));
+            }
+            if (iClass == "sent") {
+                renderMessage(iMsg, iClass);
+            } else {
+                if (iMsg.username == currentRoomID) {
+                    renderMessage(iMsg, iClass);
+                } else {
+                    addMessagePreview(iMsg);
+                }
+            }
+        };
+
+        function addMessagePreview(iIncomingMessage) {
+            removeMessagePreview(iIncomingMessage.username);
+            var msgPreview = $('<p>').addClass('preview').text(iIncomingMessage.messageContent);
+            $('[data-username="' + iIncomingMessage.username + '"] .wrap .meta').append(msgPreview);
+        }
+        function removeMessagePreview(iCurrentActiveRoom) {
+            $('[data-username="' + iCurrentActiveRoom + '"] .wrap .meta .preview').remove();
+        }
+        function renderMessage(iMsg, iClass) {
             if ($.trim(iMsg.messageContent) == '') {
                 return false;
             }
@@ -83,7 +144,7 @@
             $('.message-input input').val(null);
             $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent);
             $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-        };
+        }
         function UpdateUsers(iUser) {
             var users = $('#all-users');
             var liComp = $('<li>').addClass("contact");
@@ -110,6 +171,7 @@
 
         socket.on("addMessage", function (iMsg) {
             console.log(socket.username + " :" + iMsg.messageContent);
+            createNotificationOnNewMessage(iMsg);
             newMessage(iMsg, "replies");
         });
 
