@@ -50,6 +50,15 @@
     var currentUserID = '{{currentUser}}';
     $(".content").hide();
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+    if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+    }
+    if ("Notification" in window) {
+        Notification.requestPermission().then(function (status) {
+            console.log('Notification permission status:', status);
+            Notification['permission'] = status;
+        });
+    }
 
     var socket = io('/chat', { transports: ['websocket'] });
     socket.on('connect', function (e) {
@@ -78,7 +87,6 @@
                     }
                 }
                 removeMessagePreview(currentRoomID);
-                console.log(currentRoomID);
             });
         });
         socket.on('removeUser', function (iUser) {
@@ -86,31 +94,21 @@
         });
 
         function createNotificationOnNewMessage(iIncomingMessage) {
-            if (!("Notification" in window)) {
-                alert("This browser does not support desktop notification");
+            var options = {
+                body: iIncomingMessage.messageContent,
+                icon: 'https://ptetutorials.com/images/user-profile.png',
             }
-            if ("Notification" in window) {
-                Notification.requestPermission().then(function (status) {
-                    console.log('Notification permission status:', status);
-                    Notification['permission'] = status;
+            Notification
+                .requestPermission()
+                .then(function () {
+                    var notification = new Notification(iIncomingMessage.username + " sent a message", options);
+                    setTimeout(notification.close.bind(notification), 5000);
                 });
-
-                var options = {
-                    body: iIncomingMessage.messageContent,
-                    icon: 'https://ptetutorials.com/images/user-profile.png',
-                }
-                Notification
-                    .requestPermission()
-                    .then(function () {
-                        var notification = new Notification(iIncomingMessage.username+" sent a message", options);
-                        setTimeout(notification.close.bind(notification), 5000);
-                    });
-            }
         }
 
         function newMessage(iMsg, iClass) {
             var chatStoreRoom = currentRoomID;
-            if(iClass === "replies"){
+            if (iClass === "replies") {
                 chatStoreRoom = iMsg.username;
             }
             if (sessionStorage.getItem(chatStoreRoom) == null) {
@@ -174,14 +172,12 @@
         });
 
         socket.on("addMessage", function (iMsg) {
-            console.log(socket.username + " :" + iMsg.messageContent);
             createNotificationOnNewMessage(iMsg);
             newMessage(iMsg, "replies");
         });
 
         $('#text-msg').off('keydown').on('keydown', function (e) {
             if (e.which == 13) {
-                console.log("window");
                 var message = {
                     messageContent: $(".message-input input").val(),
                     username: '{{currentUser}}',
