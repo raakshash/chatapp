@@ -72,7 +72,7 @@
                 UpdateUsers(iUser);
             }
             $(".contact").on('click', function (e) {
-                $(".contact").removeClass("active"); ''
+                $(".contact").removeClass("active");
                 $(this).addClass('active');
                 currentRoomID = $(this).data("username");
                 $(".contact-profile p").text(currentRoomID);
@@ -90,7 +90,11 @@
             });
         });
         socket.on('removeUser', function (iUser) {
-            $('[data-username="' + iUser + '"]').remove()
+            if($('.active').data("username") === iUser){
+                $(".contact").removeClass("active");
+                $('.content').hide();
+            }
+            $('[data-username="' + iUser + '"]').remove();
         });
 
         function createNotificationOnNewMessage(iIncomingMessage) {
@@ -143,8 +147,10 @@
                 return false;
             }
             $('<li class="' + iClass + '"><img src="https://ptetutorials.com/images/user-profile.png" alt="" /><p>' + iMsg.messageContent + '</p></li>').appendTo($('.messages ul'));
-            $('.message-input input').val(null);
-            $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent);
+            if(iClass === "sent"){
+                $('.message-input input').val(null);
+            }
+            {{!-- $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent); --}}
             $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         }
         function UpdateUsers(iUser) {

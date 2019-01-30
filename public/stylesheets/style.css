@@ -515,6 +515,7 @@ body {
   -o-transition: 1s all ease;
   -webkit-transition: 1s all ease;
   transition: 1s all ease;
+  opacity: .5;
 }
 #frame #sidepanel #contacts ul li.contact .wrap .meta .preview span {
   position: initial;
