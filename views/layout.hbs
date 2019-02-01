@@ -11,13 +11,15 @@
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
-  <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
   <div class="main-container" id="main-app"></div>
   {{{body}}}
   </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/main.js"></script>
+  <script>app.init('{{currentUser}}');</script>
 </body>
 
 </html>
