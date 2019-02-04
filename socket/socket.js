@@ -22,12 +22,6 @@ exports.init = function (server) {
         });
         socket.on('join', function (iRoomID) {
             socket.join(iRoomID);
-            message = {
-                username: 'admin',
-                messageContent: "Hey "+iRoomID+"! How can I help you?",
-                date: Date.now()
-            };
-            socket.to(iRoomID).emit("greet", message);
         });
         socket.on('newMessage', function (iRoomID, iMsg) {
             socket.to(iRoomID).emit("addMessage", iMsg);
