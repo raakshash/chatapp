@@ -26,6 +26,7 @@ var app = {
                 var userExistLength = $('[data-username="' + iUser + '"]').length;
                 if (iUser != "" && userExistLength < 1) {
                     app.UpdateUsers(iUser);
+                    app.createNotificationOnNewUser(iUser);
                 }
                 $(".contact").on('click', function (e) {
                     $(".contact").removeClass("active");
@@ -109,6 +110,18 @@ var app = {
             .requestPermission()
             .then(function () {
                 var notification = new Notification(iIncomingMessage.username + " sent a message", options);
+                setTimeout(notification.close.bind(notification), 5000);
+            });
+    },
+    createNotificationOnNewUser: function(iNewUser) {
+        var options = {
+            //body: iIncomingMessage.messageContent,
+            icon: 'https://ptetutorials.com/images/user-profile.png',
+        }
+        Notification
+            .requestPermission()
+            .then(function () {
+                var notification = new Notification(iNewUser + ": A new user joined", options);
                 setTimeout(notification.close.bind(notification), 5000);
             });
     },
