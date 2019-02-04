@@ -38,7 +38,7 @@ var app = {
                     var currentRoomMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
                     if (currentRoomMessages != null) {
                         for (var i = 0; i < currentRoomMessages.length; i++) {
-                            iMessage = currentRoomMessages[i];
+                            var iMessage = currentRoomMessages[i];
                             app.renderMessage(iMessage.msg, iMessage.class);
                         }
                     }
@@ -59,12 +59,12 @@ var app = {
                     date: Date.now()
                 };
                 socket.emit("newMessage", currentRoomID, message);
-                app.newMessage(message, "sent");
+                app.newMessage(message, "sent", currentRoomID);
             });
 
             socket.on("addMessage", function (iMsg) {
                 app.createNotificationOnNewMessage(iMsg);
-                app.newMessage(iMsg, "replies");
+                app.newMessage(iMsg, "replies", currentRoomID);
             });
 
             $('#text-msg').off('keydown').on('keydown', function (e) {
@@ -75,9 +75,14 @@ var app = {
                         date: Date.now()
                     };
                     socket.emit("newMessage", currentRoomID, message);
-                    app.newMessage(message, "sent");
+                    app.newMessage(message, "sent", currentRoomID);
                     return false;
                 }
+            });
+            $('.social-media button').click(function(){
+                $('.sent').remove();
+                $('.replies').remove();
+                sessionStorage.removeItem(currentRoomID);
             });
         });
     },
@@ -108,8 +113,8 @@ var app = {
             });
     },
 
-    newMessage: function(iMsg, iClass) {
-        var chatStoreRoom = currentRoomID;
+    newMessage: function(iMsg, iClass, iCurrentRoomID) {
+        var chatStoreRoom = iCurrentRoomID;
         if (iClass === "replies") {
             chatStoreRoom = iMsg.username;
         }
@@ -124,7 +129,7 @@ var app = {
         if (iClass == "sent") {
             app.renderMessage(iMsg, iClass);
         } else {
-            if (iMsg.username == currentRoomID) {
+            if (iMsg.username == iCurrentRoomID) {
                 app.renderMessage(iMsg, iClass);
             } else {
                 app.addMessagePreview(iMsg);
