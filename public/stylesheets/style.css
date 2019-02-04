@@ -611,17 +611,17 @@ body {
 #frame .content .contact-profile p {
   float: left;
 }
-#frame .content .contact-profile .social-media {
+#frame .content .contact-profile .clear-chat {
   float: right;
 }
-#frame .content .contact-profile .social-media i {
+#frame .content .contact-profile .clear-chat i {
   margin-left: 14px;
   cursor: pointer;
 }
-#frame .content .contact-profile .social-media i:nth-last-child(1) {
+#frame .content .contact-profile .clear-chat i:nth-last-child(1) {
   margin-right: 20px;
 }
-#frame .content .contact-profile .social-media i:hover {
+#frame .content .contact-profile .clear-chat i:hover {
   color: #435f7a;
 }
 #frame .content .messages {
