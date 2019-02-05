@@ -4,8 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-global.$ = global.jQuery = require('jquery');
-global.Mustache = require('mustache');
+var session = require('express-session');
+var passport = require('passport');
+require('./config/database.js').init();
+require('./config/passport.js').init();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -23,6 +25,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// required for passport
+app.use(session({
+  secret: 'raakshash', // session secret
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
 
 app.use('/', index);
 app.use('/users', users);
