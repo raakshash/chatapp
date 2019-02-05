@@ -80,7 +80,7 @@ var app = {
                     return false;
                 }
             });
-            $('.social-media button').click(function(){
+            $('.clear-chat button').click(function(){
                 $('.sent').remove();
                 $('.replies').remove();
                 sessionStorage.removeItem(currentRoomID);
