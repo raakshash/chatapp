@@ -9,11 +9,6 @@ var UserSchema = mongoose.Schema({
         unique: true,
         required: true
     },
-    email:{
-        type: String,
-        unique: true,
-        required: true
-    },
     password:{
         type: String,
         required: true
@@ -27,7 +22,7 @@ UserSchema.methods.generateHash = function(password) {
 
 // checking if password is valid
 UserSchema.methods.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this.password);
 };
 
 var User = mongoose.model("User", UserSchema);

@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 
 exports.init = function(){
-    const dbURL = "mongodb://localhost:27017/chat-data";
-    mongoose.connect(dbURL);
+    const dbURL = process.env.MONGO_DATABASE || "mongod://localhost:27017/karochat";
+    mongoose.connect(dbURL, { useNewUrlParser: true });
     mongoose.connection.on("connected",function(){
         console.log("app connected to mongodb @ 27017");
     });

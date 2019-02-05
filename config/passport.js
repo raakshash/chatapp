@@ -2,10 +2,9 @@
 
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user.js');
-var passport = require('passport');
 
 
-exports.init = function () {
+exports.init = function (passport) {
     passport.serializeUser(function (user, done) {
         done(null, user.id);
     });
@@ -16,56 +15,55 @@ exports.init = function () {
     });
 
     passport.use('local-login', new LocalStrategy({
-        usernameField: 'email',
+        usernameField: 'username',
         passwordField: 'password',
         passReqToCallback: true
-    }, function (req, email, password, done) {
-        if (email) {
-            email = email.toLowerCase();
+    }, function (req, username, password, done) {
+        if (username) {
+            username = username.toLowerCase();
         }
 
         process.nextTick(function () {
             User.findOne({
-                'email': email
+                'username': username
             }, function (err, iUser) {
                 if (err) {
-                    done(err);
+                    return done(err);
                 }
                 if (!iUser) {
-                    done(null, false);
+                    return done(null, false);
                 }
                 if (!iUser.validPassword(password)) {
-                    done(null, false);
+                    return done(null, false);
                 } else {
-                    done(null, iUser);
+                    return done(null, iUser);
                 }
             });
         });
     }));
 
     passport.use('local-signup', new LocalStrategy({
-        usernameField: 'email',
+        usernameField: 'username',
         passwordField: 'password',
         passReqToCallback: true
-    }, function (req, email, password, done) {
-        if (email) {
-            email = email.toLowerCase();
+    }, function (req, username, password, done) {
+        if (username) {
+            username = username.toLowerCase();
         }
         process.nextTick(function () {
             if (!req.user) {
                 User.findOne({
-                    'email': email
+                    'username': username
                 }, function (err, iUser) {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     if (iUser) {
-                        done(null, false);
+                        return done(null, false);
                     } else {
                         var newUser = new User();
-                        newUser.email = email;
+                        newUser.username = username;
                         newUser.password = newUser.generateHash(password);
-                        newUser.username = req.user.username;
 
                         newUser.save(function (err) {
                             if (err) {
@@ -75,18 +73,18 @@ exports.init = function () {
                         });
                     }
                 });
-            } else if (!req.user.email) {
+            } else if (!req.user.username) {
                 User.findOne({
-                    'email': email
+                    'username': username
                 }, function (err, iUser) {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     if (iUser) {
-                        done(null, false);
+                        return done(null, false);
                     } else {
                         var user = req.user;
-                        user.email = email;
+                        user.username = username;
                         user.password = user.generateHash(password);
 
                         user.save(function (err) {
@@ -98,7 +96,7 @@ exports.init = function () {
                     }
                 });
             }else{
-                done(null, req.user);
+                return done(null, req.user);
             }
         });
     }));

@@ -1,28 +1,38 @@
 var express = require('express');
 var router = express.Router();
-var io = require('../socket/socket').io();
+var passport = require('passport');
 
 var Users = require('../models/users.js');
 
-var newUser = "";
-var newMessage = "";
+var isLoggedIn = function (req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.status(400).redirect('/');
+}
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Online Chat'});
+router.get('/', function (req, res, next) {
+  res.render('index', { title: 'Online Chat' });
 });
 
-router.get('/startchat', function(req, res){
-  if(newUser !== ""){
-    res.render('users', {title: newUser,currentUser: newUser, users: Users});
-    newUser = "";
-  }else{
-    res.redirect('/');
-  }
+router.get('/startchat', isLoggedIn, function (req, res) {
+  var username = req.user.username;
+  res.render('users', { title: username, currentUser: username, users: Users });
 });
 
-router.post('/chat', function(req, res){
-    newUser = req.body.userid;
-    res.redirect('/startchat');
+router.post('/login', passport.authenticate('local-login', {
+  successRedirect: '/startchat',
+  failureRedirect: '/'
+}));
+
+router.post('/signup', passport.authenticate('local-signup', {
+  successRedirect: '/startchat',
+  failureRedirect: '/'
+}));
+
+router.get('/logout', isLoggedIn, (req, res) => {
+  req.logout();
+  res.status(200).redirect('/');
 });
 
 module.exports = router;

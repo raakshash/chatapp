@@ -26,14 +26,19 @@
                 {{/each}}
             </ul>
         </div>
+        <div id="bottom-bar">
+            <form action="/logout" method="GET">
+                <button id="logout"><span>Logout</span></button>
+            </form>
+        </div>
     </div>
     <div class="content">
         <div class="contact-profile">
             <img src="https://ptetutorials.com/images/user-profile.png" alt="" />
             <p></p>
             <div class="clear-chat">
-				<button type="button" class="btn btn-outline-danger">Clear Chat</button>
-			</div>
+                <button type="button" class="btn btn-outline-danger">Clear Chat</button>
+            </div>
         </div>
         <div class="messages">
             <ul>
