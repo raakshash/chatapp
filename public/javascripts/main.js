@@ -3,7 +3,6 @@
 var app = {
     init: function (iCurrentUser) {
         var currentRoomID = "";
-        var currentUserID = iCurrentUser;
         $(".content").hide();
         $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         if (!("Notification" in window)) {
@@ -15,61 +14,59 @@ var app = {
                 // Notification['permission'] = status;
             });
         }
-
-        var socket = io('/chat', { transports: ['websocket'] });
-        socket.on('connect', function (e) {
-            if (currentUserID != "") {
-                socket.emit('createUserRoom', currentUserID);
-                socket.emit('join', currentUserID);
-            }
-            socket.on('updateUsers', function (iUser) {
-                var userExistLength = $('[data-username="' + iUser + '"]').length;
-                if (iUser != "" && userExistLength < 1) {
-                    app.UpdateUsers(iUser);
-                    app.createNotificationOnNewUser(iUser);
+        $('.clear-chat button').click(function(){
+            $('.sent').remove();
+            $('.replies').remove();
+            sessionStorage.removeItem(currentRoomID);
+        });
+        $('.signup').hide();
+        $('#go-to-signup').click(function () {
+            $('.login').hide();
+            $('.signup').show();
+        });
+        $('#go-to-login').click(function () {
+            $('.signup').hide();
+            $('.login').show();
+        });
+        if(iCurrentUser !== ""){
+            var socket = io('/chat', { transports: ['websocket'] });
+            socket.on('connect', function (e) {
+                if (iCurrentUser != "") {
+                    socket.emit('createUserRoom', iCurrentUser);
+                    socket.emit('join', iCurrentUser);
                 }
-                $(".contact").on('click', function (e) {
-                    $(".contact").removeClass("active");
-                    $(this).addClass('active');
-                    currentRoomID = $(this).data("username");
-                    $(".contact-profile p").text(currentRoomID);
-                    $('.sent').remove();
-                    $('.replies').remove();
-                    $(".content").show();
-                    var currentRoomMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
-                    if (currentRoomMessages != null) {
-                        for (var i = 0; i < currentRoomMessages.length; i++) {
-                            var iMessage = currentRoomMessages[i];
-                            app.renderMessage(iMessage.msg, iMessage.class);
-                        }
+                socket.on('updateUsers', function (iUser) {
+                    var userExistLength = $('[data-username="' + iUser + '"]').length;
+                    if (iUser != "" && userExistLength < 1) {
+                        app.UpdateUsers(iUser);
+                        app.createNotificationOnNewUser(iUser);
                     }
-                    app.removeMessagePreview(currentRoomID);
+                    $(".contact").on('click', function (e) {
+                        $(".contact").removeClass("active");
+                        $(this).addClass('active');
+                        currentRoomID = $(this).data("username");
+                        $(".contact-profile p").text(currentRoomID);
+                        $('.sent').remove();
+                        $('.replies').remove();
+                        $(".content").show();
+                        var currentRoomMessages = JSON.parse(sessionStorage.getItem(currentRoomID));
+                        if (currentRoomMessages != null) {
+                            for (var i = 0; i < currentRoomMessages.length; i++) {
+                                var iMessage = currentRoomMessages[i];
+                                app.renderMessage(iMessage.msg, iMessage.class);
+                            }
+                        }
+                        app.removeMessagePreview(currentRoomID);
+                    });
                 });
-            });
-            socket.on('removeUser', function (iUser) {
-                if ($('.active').data("username") === iUser) {
-                    $(".contact").removeClass("active");
-                    $('.content').hide();
-                }
-                $('[data-username="' + iUser + '"]').remove();
-            });
-            $('.submit').click(function () {
-                var message = {
-                    messageContent: $(".message-input input").val(),
-                    username: iCurrentUser,
-                    date: Date.now()
-                };
-                socket.emit("newMessage", currentRoomID, message);
-                app.newMessage(message, "sent", currentRoomID);
-            });
-
-            socket.on("addMessage", function (iMsg) {
-                app.createNotificationOnNewMessage(iMsg);
-                app.newMessage(iMsg, "replies", currentRoomID);
-            });
-
-            $('#text-msg').off('keydown').on('keydown', function (e) {
-                if (e.which == 13) {
+                socket.on('removeUser', function (iUser) {
+                    if ($('.active').data("username") === iUser) {
+                        $(".contact").removeClass("active");
+                        $('.content').hide();
+                    }
+                    $('[data-username="' + iUser + '"]').remove();
+                });
+                $('.submit').click(function () {
                     var message = {
                         messageContent: $(".message-input input").val(),
                         username: iCurrentUser,
@@ -77,15 +74,27 @@ var app = {
                     };
                     socket.emit("newMessage", currentRoomID, message);
                     app.newMessage(message, "sent", currentRoomID);
-                    return false;
-                }
+                });
+
+                socket.on("addMessage", function (iMsg) {
+                    app.createNotificationOnNewMessage(iMsg);
+                    app.newMessage(iMsg, "replies", currentRoomID);
+                });
+
+                $('#text-msg').off('keydown').on('keydown', function (e) {
+                    if (e.which == 13) {
+                        var message = {
+                            messageContent: $(".message-input input").val(),
+                            username: iCurrentUser,
+                            date: Date.now()
+                        };
+                        socket.emit("newMessage", currentRoomID, message);
+                        app.newMessage(message, "sent", currentRoomID);
+                        return false;
+                    }
+                });
             });
-            $('.clear-chat button').click(function(){
-                $('.sent').remove();
-                $('.replies').remove();
-                sessionStorage.removeItem(currentRoomID);
-            });
-        });
+        }
     },
     UpdateUsers: function(iUser) {
         var users = $('#all-users');

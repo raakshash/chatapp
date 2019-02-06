@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 
 var Users = require('../models/users.js');
+var newUser = "";
 
 var isLoggedIn = function (req, res, next) {
   if (req.isAuthenticated())
@@ -16,8 +17,12 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/startchat', isLoggedIn, function (req, res) {
-  var username = req.user.username;
-  res.render('users', { title: username, currentUser: username, users: Users });
+  if(newUser !== req.user.username){
+    res.render('users', { title: req.user.username, currentUser: req.user.username, users: Users });
+    newUser = req.user.username;
+  }else{
+    res.redirect('/logout');
+  }
 });
 
 router.post('/login', passport.authenticate('local-login', {
