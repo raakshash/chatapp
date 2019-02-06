@@ -17,7 +17,9 @@ router.get('/', function (req, res, next) {
 
 router.get('/startchat', isLoggedIn, function (req, res) {
   var username = req.user.username;
+  Users.splice(Users.indexOf(username), 1);
   res.render('users', { title: username, currentUser: username, users: Users });
+  Users.push(username);
 });
 
 router.post('/login', passport.authenticate('local-login', {
