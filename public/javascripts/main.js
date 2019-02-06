@@ -166,6 +166,7 @@ var app = {
             $('.message-input input').val(null);
         }
         // $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent);
-        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+        var messageheight = $('.messages').prop("scrollHeight");
+        $(".messages").animate({ scrollTop: messageheight }, "fast");
     }
 }
