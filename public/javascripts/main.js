@@ -67,6 +67,8 @@ var app = {
                                 app.renderMessage(iMessage.msg, iMessage.class);
                             }
                         }
+                        var messageheight = $('.messages').prop("scrollHeight");
+                        $(".messages").animate({ scrollTop: messageheight }, "fast");
                         app.removeMessagePreview(currentRoomID);
                     });
                 });
@@ -168,6 +170,8 @@ var app = {
                 app.addMessagePreview(iMsg);
             }
         }
+        var messageheight = $('.messages').prop("scrollHeight");
+        $(".messages").animate({ scrollTop: messageheight }, "fast");
     },
     addMessagePreview: function(iIncomingMessage) {
         app.removeMessagePreview(iIncomingMessage.username);
@@ -186,7 +190,5 @@ var app = {
             $('.message-input input').val(null);
         }
         // $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent);
-        var messageheight = $('.messages').prop("scrollHeight");
-        $(".messages").animate({ scrollTop: messageheight }, "fast");
     }
 }
