@@ -36,10 +36,21 @@ var app = {
                     socket.emit('join', iCurrentUser);
                 }
                 socket.on('updateUsers', function (iUser) {
-                    var userExistLength = $('[data-username="' + iUser + '"]').length;
-                    if (iUser != "" && userExistLength < 1) {
-                        app.UpdateUsers(iUser);
-                        app.createNotificationOnNewUser(iUser);
+                    if(iUser !== undefined){
+                        var userExistLength = $('[data-username="' + iUser.username + '"]').length;
+                        if (iUser.username != "" && userExistLength < 1) {
+                            app.UpdateUsers(iUser);
+                            app.createNotificationOnNewUser(iUser.username);
+                        }else{
+                            var contactStatusElem = $('[data-username="' + iUser.username + '"] .contact-status');
+                            if(iUser.status === "away"){
+                                contactStatusElem.removeClass("online");
+                                contactStatusElem.addClass(iUser.status);
+                            }else{
+                                contactStatusElem.removeClass("away");
+                                contactStatusElem.addClass(iUser.status);
+                            }
+                        }
                     }
                     $(".contact").on('click', function (e) {
                         $(".contact").removeClass("active");
@@ -99,11 +110,11 @@ var app = {
     UpdateUsers: function(iUser) {
         var users = $('#all-users');
         var liComp = $('<li>').addClass("contact");
-        liComp.attr("data-username", iUser);
+        liComp.attr("data-username", iUser.username);
         var divComp = $('<div>').addClass("wrap");
-        var spanElem = $('<span>').addClass("contact-status").addClass("online");
+        var spanElem = $('<span>').addClass("contact-status").addClass(iUser.status);
         var imgElem = $('<img>').attr("src", "https://ptetutorials.com/images/user-profile.png");
-        var metaElem = $('<div>').addClass("meta").append($('<p>').addClass("name").text(iUser));
+        var metaElem = $('<div>').addClass("meta").append($('<p>').addClass("name").text(iUser.username));
         divComp.append(spanElem);
         divComp.append(imgElem);
         divComp.append(metaElem);

@@ -13,16 +13,18 @@
         <div id="contacts">
             <ul id="all-users">
                 {{#each users}}
-                <li class="contact" data-username="{{this}}">
+                {{#if isNotCurrent}}
+                <li class="contact" data-username="{{username}}">
                     <div class="wrap">
-                        <span class="contact-status online"></span>
+                        <span class="contact-status {{status}}"></span>
                         <img src="https://ptetutorials.com/images/user-profile.png" alt="" />
                         <div class="meta">
-                            <p class="name">{{this}}</p>
+                            <p class="name">{{username}}</p>
                             {{!-- <p class="preview">You just got LITT up, Mike.</p> --}}
                         </div>
                     </div>
                 </li>
+                {{/if}}
                 {{/each}}
             </ul>
         </div>

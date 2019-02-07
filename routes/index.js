@@ -17,12 +17,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/startchat', isLoggedIn, function (req, res) {
-  if(newUser !== req.user.username){
-    res.render('users', { title: req.user.username, currentUser: req.user.username, users: Users });
-    newUser = req.user.username;
-  }else{
-    res.redirect('/logout');
-  }
+  isCurrent(req.user.username);
+  res.render('users', { title: req.user.username, currentUser: req.user.username, users: Users });
 });
 
 router.post('/login', passport.authenticate('local-login', {
@@ -39,5 +35,15 @@ router.get('/logout', isLoggedIn, (req, res) => {
   req.logout();
   res.status(200).redirect('/');
 });
+
+var isCurrent = function(iUser){
+  Users.forEach(function(user){
+    if(user.username == iUser){
+      user.isNotCurrent = false;
+    }else{
+      user.isNotCurrent = true;
+    }
+  });
+}
 
 module.exports = router;

@@ -13,12 +13,16 @@ exports.init = function (server) {
 
     io.of('/chat').on('connection', function (socket) {
         socket.on('createUserRoom', function (iRoomTitle) {
-            if (!isUserExist(iRoomTitle)) {
-                Users.push(iRoomTitle);
-                socket.username = iRoomTitle;
-                socket.emit('updateUsers', "");
-                socket.broadcast.emit('updateUsers', iRoomTitle);
+            var newUser = isUserExist(iRoomTitle);
+            if (newUser == null) {
+                newUser = {username: iRoomTitle, status: "online", isNotCurrent: true};
+                Users.push(newUser);
+            }else{
+                newUser.status = "online";
             }
+            socket.user = newUser;
+            socket.emit('updateUsers');
+            socket.broadcast.emit('updateUsers', newUser);
         });
         socket.on('join', function (iRoomID) {
             socket.join(iRoomID);
@@ -27,14 +31,21 @@ exports.init = function (server) {
             socket.to(iRoomID).emit("addMessage", iMsg);
         });
         socket.on('disconnect', function(){
-            console.log("user disconnected "+socket.username);
-            socket.leave(socket.username);
-            socket.broadcast.emit('removeUser', socket.username);
-            Users.splice(Users.indexOf(socket.username), 1);
+            if(socket.user !== undefined){
+                console.log("user disconnected "+socket.user.username);
+                socket.leave(socket.user.username);
+                socket.user.status = "away";
+                socket.broadcast.emit('updateUsers', socket.user);
+            }
         })
     });
 };
 
 var isUserExist = function (iUser) {
-    return (Users.indexOf(iUser) !== -1);
-}
+    for(var i = 0; i < Users.length; i++){
+        if(iUser == Users[i].username){
+            return Users[i];
+        }
+    }
+    return null;
+};
