@@ -47,10 +47,8 @@ exports.init = function (server) {
                                 username: 'admin',
                                 date: Date.now()
                             };
-                            setTimeout(() => {
-                                socket.to(iRoomID).emit("autoMessage", autoMessage);
-                                socket.emit("addMessage", autoMessage);
-                            }, i*200+100);
+                            socket.to(iRoomID).emit("autoMessage", autoMessage);
+                            socket.emit("addMessage", autoMessage);
                         }
                     }
                 });
