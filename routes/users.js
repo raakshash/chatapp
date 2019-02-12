@@ -45,7 +45,6 @@ router.post('/updateintent/:_intent', function(req, res, next){
       }
       if(!iIntent){
         var newIntent = new Replies();
-        newIntent.intent = req.body.intentFulifilled;
         newIntent.reply = req.body.intentReplyFulifilled;
         newIntent.save(function(err){
             if(err){
@@ -53,7 +52,6 @@ router.post('/updateintent/:_intent', function(req, res, next){
             }
         });
       }else{
-        iIntent.intent = req.body.intentFulifilled;
         iIntent.reply = req.body.intentReplyFulifilled;
         iIntent.save(function(err){
           if(err){
@@ -61,8 +59,20 @@ router.post('/updateintent/:_intent', function(req, res, next){
           }
       });
     }
-    res.redirect('/users')
+    res.redirect('/users');
   });
+});
+
+router.post('/addintent', function(req, res, next){
+  var newIntent = new Replies();
+  newIntent.intent = req.body.intentToAdd;
+  newIntent.reply = req.body.intentReplyToAdd;
+  newIntent.save(function(err){
+    if(err){
+        console.error("Error: "+err);
+    }
+  });
+  res.redirect('/users');
 });
 
 router.post('/deleteintent/:_intent', function(req, res, next){

@@ -28,11 +28,24 @@
                 <input name="intentReply" type="text" class="form-control" placeholder="Add a reply">
             </div>
             <div class="col-2">
-                <button class="form-control btn btn-success">Add</button>
+                <button class="form-control btn btn-success">Add Reply</button>
             </div>
         </div>
     </form>
     {{/if}}
     <br>
     {{/each}}
+    <form action="/users/addintent" method="POST">
+        <div class="form-row">
+            <div class="col-5">
+                <input name="intentToAdd" type="text" class="form-control" placeholder="add your intent">
+            </div>
+            <div class="col-5">
+                <input name="intentReplyToAdd" type="text" class="form-control" placeholder="Add a reply">
+            </div>
+            <div class="col-2">
+                <button class="form-control btn btn-success">Add</button>
+            </div>
+        </div>
+    </form>
 </div>
