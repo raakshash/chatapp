@@ -94,8 +94,8 @@ var app = {
                     app.newMessage(iMsg, "replies", currentRoomID);
                 });
 
-                socket.on("autoMessage", function(iMsg){
-                    app.newMessage(iMsg, "sent", iMsg.username);
+                socket.on("autoMessage", function(iMsg, iRoomID){
+                    app.newMessage(iMsg, "sent", iRoomID);
                 });
 
                 $('#text-msg').off('keydown').on('keydown', function (e) {

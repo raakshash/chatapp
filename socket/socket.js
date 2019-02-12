@@ -49,7 +49,7 @@ exports.init = function (server) {
                             };
                             setTimeout(() => {
                                 socket.to(iRoomID).emit("autoMessage", autoMessage);
-                                socket.emit("addMessage", autoMessage);
+                                socket.emit("addMessage", autoMessage, socket.user.username);
                             }, i*200+100);
                         }
                     }
