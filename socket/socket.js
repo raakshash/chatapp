@@ -42,7 +42,7 @@ exports.init = function (server) {
                     socket.to(iRoomID).emit("addMessage", iMsg);
                     if(iReply.length > 0){
                         for(var i = 0; i < iReply.length; i++){
-                            const autoMessage = {
+                            let autoMessage = {
                                 messageContent: iReply[i].reply,
                                 username: 'admin',
                                 date: Date.now()
