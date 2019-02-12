@@ -95,7 +95,8 @@ var app = {
                 });
 
                 socket.on("autoMessage", function(iMsg, iRoomID){
-                    app.newMessage(iMsg, "sent", iRoomID);
+                    iMsg.username = iRoomID;
+                    app.newMessage(iMsg, "sent", currentRoomID);
                 });
 
                 $('#text-msg').off('keydown').on('keydown', function (e) {
