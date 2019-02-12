@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/startchat', isLoggedIn, function (req, res) {
   isCurrent(req.user.username);
-  res.render('users', { title: req.user.username, currentUser: req.user.username, users: Users });
+  res.render('users', { title: req.user.username, currentUser: req.user.username.toLowerCase(), users: Users });
 });
 
 router.post('/login', passport.authenticate('local-login', {

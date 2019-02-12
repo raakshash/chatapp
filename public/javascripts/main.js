@@ -94,6 +94,10 @@ var app = {
                     app.newMessage(iMsg, "replies", currentRoomID);
                 });
 
+                socket.on("autoMessage", function(iMsg){
+                    app.newMessage(iMsg, "sent", currentRoomID);
+                });
+
                 $('#text-msg').off('keydown').on('keydown', function (e) {
                     if (e.which == 13) {
                         var message = {

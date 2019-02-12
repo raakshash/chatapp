@@ -1,0 +1,38 @@
+<div class="container">
+    {{#each intentData}}
+    {{#if reply}}
+    <form action="/users/updateintent/{{intent}}" method="POST">
+        <div class="form-row">
+            <div class="col-5">
+                <input name="intentFulifilled" type="text" class="form-control" placeholder="{{intent}}" readonly>
+            </div>
+            <div class="col-5">
+                <input name="intentReplyFulifilled" type="text" class="form-control" placeholder="{{reply}}">
+            </div>
+            <div class="col-2">
+                <button class="form-control btn btn-warning">Update</button>
+            </div>
+            <br>
+            <hr>
+            <br>
+        </div>
+    </form>
+    {{else}}
+    <form action="/users/updateintent" method="POST">
+        <div class="form-row">
+            <div class="col-5">
+                <input name="intent" type="text" value="{{intent}}" class="form-control" placeholder="{{intent}}"
+                    readonly>
+            </div>
+            <div class="col-5">
+                <input name="intentReply" type="text" class="form-control" placeholder="Add a reply">
+            </div>
+            <div class="col-2">
+                <button class="form-control btn btn-success">Add</button>
+            </div>
+        </div>
+    </form>
+    {{/if}}
+    <br>
+    {{/each}}
+</div>
