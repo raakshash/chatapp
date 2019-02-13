@@ -16,28 +16,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-router.post('/updateintent', function(req, res, next){
-  Replies.findOne({'intent': req.body.intent}, function(err, iIntent){
-    if(err){
-      console.error("Error: "+ err);
-      res.sendStatus(400).json({
-        message: "Access denied"
-      });
-    }else{
-      if(iIntent){
-        iIntent.reply = req.body.intentReply;
-        iIntent.save(function(err){
-          if(err){
-            console.error("Data not added: "+err);
-          }
-        });
-      }
-    }
-  }).then(function(){
-    res.redirect('/users');
-  });
-});
-
 router.post('/updateintent/:_intent', function(req, res, next){
   Replies.findOne({'intent': req.params._intent}, function(err, iIntent){
       if(err){
@@ -45,14 +23,15 @@ router.post('/updateintent/:_intent', function(req, res, next){
       }
       if(!iIntent){
         var newIntent = new Replies();
-        newIntent.reply = req.body.intentReplyFulifilled;
+        newIntent.reply = [];
+        newIntent.reply.push(req.body.intentReplyFulifilled);
         newIntent.save(function(err){
             if(err){
                 console.error("Error: "+err);
             }
         });
       }else{
-        iIntent.reply = req.body.intentReplyFulifilled;
+        iIntent.reply.push(req.body.intentReplyFulifilled);
         iIntent.save(function(err){
           if(err){
               console.error("Error: "+err);
@@ -66,7 +45,8 @@ router.post('/updateintent/:_intent', function(req, res, next){
 router.post('/addintent', function(req, res, next){
   var newIntent = new Replies();
   newIntent.intent = req.body.intentToAdd;
-  newIntent.reply = req.body.intentReplyToAdd;
+  newIntent.reply = [];
+  newIntent.reply.push(req.body.intentReplyToAdd);
   newIntent.save(function(err){
     if(err){
         console.error("Error: "+err);

@@ -42,8 +42,9 @@ exports.init = function (server) {
                 getInteractiveMessage(iMsg.messageContent.toLowerCase()).then(function(iReply){
                     if(iReply.length > 0){
                         for(var i = 0; i < iReply.length; i++){
+                            let replyRandomIndex = Math.floor(Math.random() * iReply[i].reply.length);
                             let autoMessage = {
-                                messageContent: iReply[i].reply,
+                                messageContent: iReply[i].reply[replyRandomIndex],
                                 username: 'admin',
                                 date: Date.now()
                             };
@@ -105,7 +106,7 @@ var findIntentData = function(iUserIntent){
                 if(iReply[i] === undefined || iReply[i] != undefined && iUserIntent[i] !== iReply[i].intent){
                     var newReply = new Replies();
                     newReply.intent = iUserIntent;
-                    newReply.reply = "";
+                    newReply.reply = [];
                     newReply.save(function(err){
                         if(err){
                             console.error("Error: "+err);

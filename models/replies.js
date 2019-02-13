@@ -6,7 +6,7 @@ var UserReplySchema = mongoose.Schema({
         required: true
     },
     reply:{
-        type: String
+        type: Array
     }
 });
 
