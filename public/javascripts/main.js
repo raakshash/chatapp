@@ -95,8 +95,7 @@ var app = {
                 });
 
                 socket.on("autoMessage", function(iMsg, iRoomID){
-                    iMsg.username = iRoomID;
-                    app.newMessage(iMsg, "sent", currentRoomID);
+                    app.newMessage(iMsg, "sent", iRoomID);
                 });
 
                 $('#text-msg').off('keydown').on('keydown', function (e) {
@@ -167,21 +166,29 @@ var app = {
             sessionStorage.setItem(chatStoreRoom, JSON.stringify(storedMessages));
         }
         if (iClass == "sent") {
-            app.renderMessage(iMsg, iClass);
+            if($('.active').data("username") == iCurrentRoomID){
+                app.renderMessage(iMsg, iClass);
+            }else{
+                app.addMessagePreview(iMsg, iCurrentRoomID);
+            }
         } else {
             if (iMsg.username == iCurrentRoomID) {
                 app.renderMessage(iMsg, iClass);
             } else {
-                app.addMessagePreview(iMsg);
+                app.addMessagePreview(iMsg, iMsg.username);
             }
         }
         var messageheight = $('.messages').prop("scrollHeight");
         $(".messages").animate({ scrollTop: messageheight }, "fast");
     },
-    addMessagePreview: function(iIncomingMessage) {
-        app.removeMessagePreview(iIncomingMessage.username);
-        var msgPreview = $('<p>').addClass('preview').text(iIncomingMessage.messageContent);
-        $('[data-username="' + iIncomingMessage.username + '"] .wrap .meta').append(msgPreview);
+    addMessagePreview: function(iIncomingMessage, iUserRoom) {
+        app.removeMessagePreview(iUserRoom);
+        var sender = iIncomingMessage.username;
+        if(iIncomingMessage.username != iUserRoom){
+            sender = "You";
+        }
+        var msgPreview = $('<p>').addClass('preview').html('<span>'+sender+': </span>'+iIncomingMessage.messageContent);
+        $('[data-username="' + iUserRoom + '"] .wrap .meta').append(msgPreview);
     },
     removeMessagePreview: function(iCurrentActiveRoom) {
         $('[data-username="' + iCurrentActiveRoom + '"] .wrap .meta .preview').remove();

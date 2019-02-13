@@ -38,8 +38,8 @@ exports.init = function (server) {
         socket.on('newMessage', function (iRoomID, iMsg) {
             iRoomID = iRoomID.toLowerCase();
             if(iRoomID === "admin"){
+                socket.to(iRoomID).emit("addMessage", iMsg);
                 getInteractiveMessage(iMsg.messageContent.toLowerCase()).then(function(iReply){
-                    socket.to(iRoomID).emit("addMessage", iMsg);
                     if(iReply.length > 0){
                         for(var i = 0; i < iReply.length; i++){
                             let autoMessage = {
@@ -48,8 +48,8 @@ exports.init = function (server) {
                                 date: Date.now()
                             };
                             setTimeout(() => {
-                                socket.to(iRoomID).emit("autoMessage", autoMessage);
-                                socket.emit("addMessage", autoMessage, socket.user.username);
+                                socket.to(iRoomID).emit("autoMessage", autoMessage, socket.user.username);
+                                socket.emit("addMessage", autoMessage);
                             }, i*200+100);
                         }
                     }
