@@ -12,24 +12,39 @@
             </div>
         </div>
         <div class="col-6">
-            {{#each intentData}}
             <div class="card">
                 <div class="card-body">
-                    <form action="/users/updateintent/{{intent}}" method="POST">
-                        <input name="intentFulifilled" type="text" class="form-control" placeholder="{{intent}}"
+                    <div class="dropdown show">
+                        <button class="form-control btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{#if isIntentDataSelected}}
+                            {{currentIntent.intent}}
+                            {{else}}
+                            Update Intent
+                            {{/if}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {{#each intentData}}
+                            <a class="dropdown-item" href="/users/{{intent}}">{{intent}}</a>
+                            <div class="dropdown-divider"></div>
+                            {{/each}}
+                        </div>
+                    </div><br>
+                    {{#if isIntentDataSelected}}
+                    <form action="/users/updateintent/{{currentIntent.intent}}" method="POST">
+                        <input name="intentFulifilled" type="text" class="form-control" placeholder="{{currentIntent.intent}}"
                             readonly>
                         <br>
                         <input name="intentReplyFulifilled" type="text" class="form-control" placeholder="add intent replies">
                         <br>
-                        <input name="intentReplyCount" type="text" class="form-control" placeholder="{{reply.length}}"
+                        <input name="intentReplyCount" type="text" class="form-control" placeholder="{{currentIntent.reply.length}}"
                             readonly>
                         <br>
                         <button class="form-control btn btn-warning">Update</button>
                     </form>
+                    {{/if}}
                 </div>
             </div>
-            <br>
-            {{/each}}
         </div>
     </div>
 </div>
