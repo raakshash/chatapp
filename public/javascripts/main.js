@@ -19,15 +19,6 @@ var app = {
             $('.replies').remove();
             sessionStorage.removeItem(currentRoomID);
         });
-        $('.signup').hide();
-        $('#go-to-signup').click(function () {
-            $('.login').hide();
-            $('.signup').show();
-        });
-        $('#go-to-login').click(function () {
-            $('.signup').hide();
-            $('.login').show();
-        });
         if(iCurrentUser !== ""){
             var socket = io('/chat', { transports: ['websocket'] });
             socket.on('connect', function (e) {
@@ -87,6 +78,7 @@ var app = {
                     };
                     socket.emit("newMessage", currentRoomID, message);
                     app.newMessage(message, "sent", currentRoomID);
+                    $('.message-input input').val(null);
                 });
 
                 socket.on("addMessage", function (iMsg) {
@@ -107,6 +99,7 @@ var app = {
                         };
                         socket.emit("newMessage", currentRoomID, message);
                         app.newMessage(message, "sent", currentRoomID);
+                        $('.message-input input').val(null);
                         return false;
                     }
                 });
@@ -198,9 +191,6 @@ var app = {
             return false;
         }
         $('<li class="' + iClass + '"><img src="https://ptetutorials.com/images/user-profile.png" alt="" /><p>' + iMsg.messageContent + '</p></li>').appendTo($('.messages ul'));
-        if (iClass === "sent") {
-            $('.message-input input').val(null);
-        }
         // $('.contact.active .preview').html('<span>You: </span>' + iMsg.messageContent);
     }
 }

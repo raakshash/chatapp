@@ -87,9 +87,13 @@ var getInteractiveMessage = function (iMessageContent) {
     return client.message(iMessageContent, {})
         .then((data) => {
             var userIntent = [];
-            data.entities.intent.forEach(function(iUserIntent){
-                userIntent.push(iUserIntent.value);
-            });
+            if(data.entities.intent !== undefined){
+                data.entities.intent.forEach(function(iUserIntent){
+                    userIntent.push(iUserIntent.value);
+                });
+            }else{
+                userIntent.push("dont_understand");
+            }
             return findIntentData(userIntent);
             // data = JSON.stringify(data);
             // console.log(data);

@@ -46,20 +46,25 @@ router.post('/updateintent/:_intent', function(req, res, next){
       }
       if(!iIntent){
         var newIntent = new Replies();
+        newIntent.intent = req.params._intent;
         newIntent.reply = [];
-        newIntent.reply.push(req.body.intentReplyFulifilled);
+        newIntent.reply.push(req.body.intentReplyToAdd);
         newIntent.save(function(err){
             if(err){
                 console.error("Error: "+err);
             }
         });
+        isIntentSelected = true;
+        currentIntentData = newIntent;
       }else{
-        iIntent.reply.push(req.body.intentReplyFulifilled);
+        iIntent.reply.push(req.body.intentReplyToAdd);
         iIntent.save(function(err){
           if(err){
               console.error("Error: "+err);
           }
-      });
+        });
+        isIntentSelected = true;
+        currentIntentData = iIntent;
     }
     res.redirect('/users');
   });
@@ -75,16 +80,9 @@ router.post('/addintent', function(req, res, next){
         console.error("Error: "+err);
     }
   });
+  isIntentSelected = true;
+  currentIntentData = iIntent;
   res.redirect('/users');
-});
-
-router.post('/deleteintent/:_intent', function(req, res, next){
-  Replies.deleteOne({'intent': req.params._intent}, function(err){
-    if(err){
-      console.error('Error: '+err);
-    }
-    res.redirect('/users')
-  });
 });
 
 module.exports = router;

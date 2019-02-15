@@ -3,11 +3,20 @@
         <div class="col-6 col-xs-6 col-sm-6">
             <div class="card">
                 <div class="card-body">
+                    {{#if isIntentDataSelected}}
+                    <form action="/users/updateintent/{{currentIntent.intent}}" method="POST">
+                        <input name="intentToAdd" type="text" class="form-control" placeholder="{{currentIntent.intent}}"
+                            readonly><br>
+                        <input name="intentReplyToAdd" type="text" class="form-control" placeholder="Add new reply"><br>
+                        <button class="form-control btn btn-warning">Update</button>
+                    </form>
+                    {{else}}
                     <form action="/users/addintent" method="POST">
                         <input name="intentToAdd" type="text" class="form-control" placeholder="add your intent"><br>
                         <input name="intentReplyToAdd" type="text" class="form-control" placeholder="Add a reply"><br>
                         <button class="form-control btn btn-success">Add</button>
                     </form>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -25,23 +34,25 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#each intentData}}
-                            <a class="dropdown-item" href="/users/{{intent}}">{{intent}}</a>
+                            <a class="dropdown-item" href="/users/{{intent}}">{{intent}} {{reply.length}}</a>
                             <div class="dropdown-divider"></div>
                             {{/each}}
                         </div>
                     </div><br>
                     {{#if isIntentDataSelected}}
-                    <form action="/users/updateintent/{{currentIntent.intent}}" method="POST">
-                        <input name="intentFulifilled" type="text" class="form-control" placeholder="{{currentIntent.intent}}"
-                            readonly>
-                        <br>
-                        <input name="intentReplyFulifilled" type="text" class="form-control" placeholder="add intent replies">
-                        <br>
-                        <input name="intentReplyCount" type="text" class="form-control" placeholder="{{currentIntent.reply.length}}"
-                            readonly>
-                        <br>
-                        <button class="form-control btn btn-warning">Update</button>
-                    </form>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>{{currentIntent.intent}}</h2>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {{#each currentIntent.reply}}
+                            <li class="list-group-item">{{this}}</li>
+                            {{/each}}
+                        </ul>
+                        <div class="card-footer text-muted">
+                            {{currentIntent.reply.length}}
+                        </div>
+                    </div>
                     {{/if}}
                 </div>
             </div>
