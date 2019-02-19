@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "./node_modules/mocha/bin/mocha"
+    "start": "./node_modules/mocha/bin/mocha && node ./bin/www"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -29,9 +28,7 @@
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "uuid": "^3.3.2",
-    "uws": "^10.148.1"
-  },
-  "devDependencies": {
+    "uws": "^10.148.1",
     "chai": "^4.2.0",
     "mocha": "^6.0.0"
   }
