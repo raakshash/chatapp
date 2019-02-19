@@ -2,8 +2,8 @@ var sio = require('socket.io');
 var io = null;
 
 var Users = require('../models/users.js');
-var Replies = require('../models/replies.js');
-const Wit = require('node-wit').Wit;
+const autotext = require('../autotext/index.js');
+
 
 exports.io = function () {
     return io;
@@ -34,12 +34,18 @@ exports.init = function (server) {
         socket.on('join', function (iRoomID) {
             iRoomID = iRoomID.toLowerCase()
             socket.join(iRoomID);
+            let greetMessage = {
+                messageContent: "Hi "+iRoomID+"! This is kitchen assistant. I am here to help you to design your dream kitchen",
+                username: 'admin',
+                date: Date.now()
+            };
+            socket.emit("greet", greetMessage);
         });
         socket.on('newMessage', function (iRoomID, iMsg) {
             iRoomID = iRoomID.toLowerCase();
             if(iRoomID === "admin"){
                 socket.to(iRoomID).emit("addMessage", iMsg);
-                getInteractiveMessage(iMsg.messageContent.toLowerCase()).then(function(iReply){
+                autotext.Dialogflow.getInteractiveMessage(iMsg.messageContent.toLowerCase()).then(function(iReply){
                     if(iReply.length > 0){
                         for(var i = 0; i < iReply.length; i++){
                             let replyRandomIndex = Math.floor(Math.random() * iReply[i].reply.length);
@@ -77,50 +83,4 @@ var isUserExist = function (iUser) {
         }
     }
     return null;
-};
-
-
-var getInteractiveMessage = function (iMessageContent) {
-    const client = new Wit({
-        accessToken: 'OVD36ZXM3YESNQEYSMQL45PXYTC7INYK'
-    });
-    return client.message(iMessageContent, {})
-        .then((data) => {
-            var userIntent = [];
-            if(data.entities.intent !== undefined){
-                data.entities.intent.forEach(function(iUserIntent){
-                    userIntent.push(iUserIntent.value);
-                });
-            }else{
-                userIntent.push("dont_understand");
-            }
-            return findIntentData(userIntent);
-            // data = JSON.stringify(data);
-            // console.log(data);
-        });
-};
-
-var findIntentData = function(iUserIntent){
-    return Replies.find({'intent': iUserIntent}, function(err, iReply){
-        if(err){
-            return console.error("Error: "+err);
-        }
-        if(iUserIntent.length !== iReply.length){
-            for(let i = 0; i < iUserIntent.length; i++){
-                if(iReply[i] === undefined || iReply[i] != undefined && iUserIntent[i] !== iReply[i].intent){
-                    var newReply = new Replies();
-                    newReply.intent = iUserIntent;
-                    newReply.reply = [];
-                    newReply.save(function(err){
-                        if(err){
-                            console.error("Error: "+err);
-                        }
-                    });
-                }
-            }
-        }
-        if(iReply.length > 0){
-            return iReply;
-        }
-    });
 };

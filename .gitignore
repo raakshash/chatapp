@@ -1,3 +1,4 @@
 node_modules
 data
 mongodb.sh
+variables.env
