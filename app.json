@@ -19,6 +19,7 @@
   },
   "name": "chatapp",
   "scripts": {
+    "test": "mocha"
   },
   "stack": "heroku-18"
 }
