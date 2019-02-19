@@ -8,9 +8,9 @@ var session = require('express-session');
 var passport = require('passport');
 require('./config/database.js').init();
 require('./config/passport.js').init(passport);
-require('dotenv').config({
-  path: 'variables.env'
-});
+// require('dotenv').config({
+//   path: 'variables.env'
+// });
 
 var index = require('./routes/index');
 var users = require('./routes/users');
