@@ -33,7 +33,6 @@ class Dialogflow {
                 let result = [];
                 responses.forEach(function (iResponse) {
                     if (iResponse != undefined) {
-                        console.log(iResponse);
                         let reply = [];
                         if (iResponse.queryResult.fulfillmentText != "") {
                             reply.push(iResponse.queryResult.fulfillmentText);
