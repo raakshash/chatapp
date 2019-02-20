@@ -52,6 +52,9 @@ class Dialogflow {
                     }
                 });
                 return result;
+            })
+            .catch(function (err) {
+                console.error('ERROR:', err);
             });
     }
 };

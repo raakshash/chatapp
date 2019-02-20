@@ -20,10 +20,13 @@ class Wit {
                 } else {
                     userIntent.push("dont_understand");
                 }
-                return findIntentData(userIntent);
+                return this.findIntentData(userIntent);
                 // data = JSON.stringify(data);
                 // console.log(data);
-            });
+            })
+            .catch(err => {
+                console.error('ERROR:', err);
+            });;
     }
     findIntentData(iUserIntent) {
         return Replies.find({
