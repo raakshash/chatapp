@@ -8,14 +8,14 @@ const autotext = require('../autotext/index.js');
 
 
 describe('Reply of hi ', function () {
-    it('should be a greeting message', function () {
+    it('should be a greeting message from Dialogflow', function () {
         autotext.Dialogflow.getInteractiveMessage('hi').then(function(iResults){
             iResults.forEach(function(iRes){
                 expect(iRes.reply.length).to.greaterThan(0);
             });
         });
     });
-    it('should be a greeting message', function () {
+    it('should be a greeting message from Wit', function () {
         autotext.Wit.getInteractiveMessage('hi').then(function(iResults){
             iResults.forEach(function(iRes){
                 expect(iRes.reply.length).to.greaterThan(0);
