@@ -1,5 +1,5 @@
 ## Demo<a name="demo"></a>
-Checkout [Demo](https://karochat.herokuapp.com/)
+Checkout [Demo](https://karochat-staging.herokuapp.com/)
 
 ## Running Locally
 Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
