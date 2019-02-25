@@ -52,7 +52,8 @@ exports.init = function (server) {
                             let autoMessage = {
                                 messageContent: iReply[i].reply[replyRandomIndex],
                                 username: 'admin',
-                                date: Date.now()
+                                date: Date.now(),
+                                action: iReply[i].action
                             };
                             setTimeout(() => {
                                 socket.to(iRoomID).emit("autoMessage", autoMessage, socket.user.username);
