@@ -669,11 +669,3 @@ body {
 #frame .content .message-input .wrap button:focus {
   outline: none;
 }
-
-.card button{
-  padding: 0;
-}
-
-.card a{
-  padding: .375rem .75rem;
-}
