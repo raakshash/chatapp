@@ -6,13 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
-require('./config/database.js').init();
-require('./config/passport.js').init(passport);
 if (process.env.NODE_ENV != "production") {
   require('dotenv').config({
     path: 'variables.env'
   });
 }
+require('./config/database.js').init();
+require('./config/passport.js').init(passport);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
